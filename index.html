@@ -90,7 +90,7 @@
                 <h3 class="vintage-title text-lg font-bold text-[#5C564E] mb-2">🎵 Memory Audio</h3>
                 <div class="bg-[#F9F8F6] rounded-xl p-3 border border-[#EBE7D5] mb-4">
                     <div class="marquee text-xs font-medium text-amber-800" id="track-title">
-                        <span>သီချင်းစာရင်းကို ချိတ်ဆက်နေပါသည်...</span>
+                        <span>သီချင်းဖွင့်ရန် Play ခလုတ်ကို နှိပ်ပါ...</span>
                     </div>
                 </div>
                 
@@ -110,9 +110,7 @@
                         </svg>
                     </button>
                 </div>
-                <audio id="audio-element" class="hidden" onended="nextTrack()" preload="auto"></audio>
-                
-                <iframe id="audio-iframe" class="hidden" src="" allow="autoplay"></iframe>
+                <audio id="audio-element" class="hidden" onended="nextTrack()" preload="auto" crossorigin="anonymous"></audio>
             </div>
 
             <div id="upload-card" class="bg-white rounded-2xl p-6 border border-[#E3DEC3] shadow-xs">
@@ -192,24 +190,24 @@
             "Happy Birthday ပါကွာ! စိတ်ကူးထားတဲ့ ရည်မှန်းချက်တွေအကုန်လုံး လွယ်လွယ်ကူကူနဲ့ လျင်လျင်မြန်မြန် အကောင်အထည်ပေါ်ပါစေ။ 🎉"
         ];
 
-        // Google Configurations
+        // 🎵 မင်းပေးထားတဲ့ Audio Direct Link ကို ကုဒ်ထဲမှာ အသေထည့်သွင်းပေးထားပြီး ဖြစ်ပါတယ်။
+        const trackList = [
+            { name: "Our Special Memories", url: "https://docs.google.com/uc?export=download&id=1Pzn5-mR4FgZ12ZPNORZtN9W3QF31ON7R" }
+        ];
+
+        // Google Configurations (ပုံပြသမှုအတွက်သာ)
         const PHOTO_FOLDER_ID = "1xpl6XSMULz2BBqpPc9E0uVnnOGc9s5wt";
-        const MUSIC_FOLDER_ID = "1q6mrxn5aZbzKGNDt6Du9Wj5moE7ADZVg";
         const GOOGLE_API_KEY = "AIzaSyA6i704gtn5D9DzHY9bzEy9tF2snE7NNFo";
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRw97SgMQnwHUQTZUJapV5gycmEI2dz7qayMiF6bABWfh6EVzd7KaGw0kmA-t_wdO6Aw/exec";
 
-        let trackList = [];
         let currentTrackIndex = -1;
-        let isMusicPlaying = false;
 
         window.addEventListener('DOMContentLoaded', () => {
             checkBirthdayStatus();
             loadPhotos();
-            loadMusicList();
             buildModalTable();
         });
 
-        // Modal Pop-up Functionality
         function openModal() {
             const modal = document.getElementById('birthday-modal');
             const content = document.getElementById('modal-content');
@@ -382,85 +380,55 @@
             }
         }
 
-        async function loadMusicList() {
-            const url = "https://www.googleapis.com/drive/v3/files?q='" + MUSIC_FOLDER_ID + "'+in+parents+and+(mimeType+contains+'audio/'+or+mimeType+contains+'video/'+or+name+contains+'.mp3')&fields=files(id,name)&key=" + GOOGLE_API_KEY;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.files && data.files.length > 0) {
-                    trackList = data.files;
-                    document.getElementById('track-title').innerHTML = `<span>Memory Audio အဆင်သင့်ရှိပါပြီ။ Play ကိုနှိပ်ပါ။</span>`;
-                } else {
-                    document.getElementById('track-title').innerHTML = `<span>သီချင်း folder ထဲတွင် ဖိုင်မတွေ့ပါ။</span>`;
-                }
-            } catch (err) {
-                console.error("Music load error:", err);
-            }
-        }
-
-        // Updated Secure Play Track Function
-        function playRandomTrack() {
+        // 🎵 HTML5 Audio Controller
+        function playTrack(index) {
             if (trackList.length === 0) return;
             
-            const randomIndex = Math.floor(Math.random() * trackList.length);
-            currentTrackIndex = randomIndex;
-            
+            currentTrackIndex = index;
             const track = trackList[currentTrackIndex];
             const audio = document.getElementById('audio-element');
-            const iframe = document.getElementById('audio-iframe');
             
-            document.getElementById('track-title').innerHTML = `<span>Now Playing 🎵 : ` + track.name.split('.')[0] + `</span>`;
+            document.getElementById('track-title').innerHTML = `<span>Now Playing 🎵 : ` + track.name + `</span>`;
             
-            // Method 1: standard audio stream URL
-            audio.src = "https://docs.google.com/uc?export=download&id=" + track.id;
-            
-            // Method 2 (Fallback iframe method to force stream via drive engine)
-            iframe.src = "https://docs.google.com/file/d/" + track.id + "/preview";
+            audio.src = track.url;
+            audio.load();
             
             audio.play().then(() => {
-                isMusicPlaying = true;
                 updateMusicUI(true);
             }).catch(err => {
-                // If direct playback is blocked, we still show playing UI because iframe method triggers audio
-                console.log("Audio tag play catch, using backup stream layout");
-                isMusicPlaying = true;
-                updateMusicUI(true);
+                console.log("Play error:", err);
+                updateMusicUI(false);
             });
         }
 
         function togglePlay() {
             const audio = document.getElementById('audio-element');
-            const iframe = document.getElementById('audio-iframe');
             
-            if (trackList.length === 0) {
-                alert("သီချင်းဖိုင်များကို ရှာမတွေ့သေးပါ။ Drive Folder ကို Public Viewer ချထားပေးရန် လိုအပ်ပါသည်။");
-                return;
-            }
+            if (trackList.length === 0) return;
             
             if (currentTrackIndex === -1) {
-                playRandomTrack();
+                playTrack(0);
                 return;
             }
             
-            if (!isMusicPlaying) {
-                audio.play().catch(e => {});
-                // Restore iframe stream
-                if(!iframe.src || iframe.src.includes("about:blank")) {
-                    iframe.src = "https://docs.google.com/file/d/" + trackList[currentTrackIndex].id + "/preview";
-                }
-                isMusicPlaying = true;
-                updateMusicUI(true);
+            if (audio.paused) {
+                audio.play().then(() => {
+                    updateMusicUI(true);
+                }).catch(() => {
+                    updateMusicUI(false);
+                });
             } else {
                 audio.pause();
-                // Kill iframe stream to stop sound completely
-                iframe.src = "about:blank";
-                isMusicPlaying = false;
                 updateMusicUI(false);
             }
         }
 
         function nextTrack() {
-            playRandomTrack();
+            let nextIndex = currentTrackIndex + 1;
+            if (nextIndex >= trackList.length) {
+                nextIndex = 0;
+            }
+            playTrack(nextIndex);
         }
 
         function updateMusicUI(isPlaying) {
