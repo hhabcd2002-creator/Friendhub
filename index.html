@@ -138,13 +138,15 @@
     </main>
 
     <script>
-        // ၁။ သူငယ်ချင်းမွေးနေ့စာရင်း
+        // ၁။ မွေးနေ့ရှင် စာရင်းအမှန်များ (ခုနှစ်ပါ ထည့်သွင်းပြီး)
         const friends = [
-            { name: "မောင်မောင်", month: 6, day: 3 },
-            { name: "အောင်အောင်", month: 6, day: 8 },
-            { name: "စုစု", month: 6, day: 7 },
-            { name: "ကျော်ကျော်", month: 9, day: 15 },
-            { name: "သီတာ", month: 12, day: 25 }
+            { name: "Tharaphi Kyaw", year: 2002, month: 2, day: 1 },
+            { name: "Par Mwe Hlyan", year: 2001, month: 8, day: 31 },
+            { name: "Khin Yadanar", year: 2001, month: 2, day: 5 },
+            { name: "Saw Kyaw Myint", year: 2002, month: 1, day: 14 },
+            { name: "Khine Thin Wai", year: 2003, month: 4, day: 25 },
+            { name: "Ei Ei Khine", year: 2002, month: 3, day: 31 },
+            { name: "Htet Aung Win", year: 2002, month: 2, day: 5 }
         ];
 
         const birthdayWishes = [
@@ -171,6 +173,7 @@
 
         function checkBirthdayStatus() {
             const today = new Date();
+            const currentYear = today.getFullYear();
             const currentMonth = today.getMonth() + 1; 
             const currentDate = today.getDate();
 
@@ -184,7 +187,11 @@
             const uploadCard = document.getElementById('upload-card');
 
             if (birthdayBoysGirls.length > 0) {
-                const names = birthdayBoysGirls.map(f => f.name).join(' & ');
+                const namesWithAge = birthdayBoysGirls.map(f => {
+                    const age = currentYear - f.year;
+                    return f.name + " (" + age + " 年ပြည့်)";
+                }).join(' & ');
+
                 const randomWish = birthdayWishes[Math.floor(Math.random() * birthdayWishes.length)];
                 
                 bodyBg.className = "bg-gradient-to-b from-amber-50 to-orange-100 text-[#422206] min-h-screen transition-colors duration-1000 ease-in-out pb-12";
@@ -199,8 +206,8 @@
 
                 banner.className = "block bg-white/90 border-2 border-amber-400 rounded-2xl p-6 text-center shadow-lg relative overflow-hidden animate-pulse";
                 banner.innerHTML = `
-                    <div class="text-3xl mb-1">🎂</div>
-                    <h2 class="vintage-title text-xl font-black text-amber-800">Happy Birthday ပါ၊ ` + names + ` ရေ...</h2>
+                    <div class="text-3xl mb-1">🎁 🎉</div>
+                    <h2 class="vintage-title text-xl font-black text-amber-800">Happy Birthday ပါ၊ ` + namesWithAge + ` ရေ...</h2>
                     <p class="text-xs mt-2 italic text-amber-900 leading-relaxed font-medium">"` + randomWish + `"</p>
                 `;
                 
@@ -211,21 +218,23 @@
                 logo.className = "vintage-title text-2xl font-bold tracking-wide text-[#5C564E]";
                 banner.className = "hidden";
                 
-                renderUpcomingBirthdays(currentMonth, currentDate);
+                renderUpcomingBirthdays(currentMonth, currentDate, currentYear);
             }
         }
 
-        function renderUpcomingBirthdays(currMonth, currDate) {
+        function renderUpcomingBirthdays(currMonth, currDate, currYear) {
             const listContainer = document.getElementById('upcoming-list');
             
             let upcoming = friends.map(f => {
-                let birthdayThisYear = new Date(new Date().getFullYear(), f.month - 1, f.day);
-                if (birthdayThisYear < new Date(new Date().getFullYear(), currMonth - 1, currDate)) {
+                let birthdayThisYear = new Date(currYear, f.month - 1, f.day);
+                if (birthdayThisYear < new Date(currYear, currMonth - 1, currDate)) {
                     birthdayThisYear.setFullYear(birthdayThisYear.getFullYear() + 1);
                 }
-                const diffTime = Math.abs(birthdayThisYear - new Date(new Date().getFullYear(), currMonth - 1, currDate));
+                const diffTime = Math.abs(birthdayThisYear - new Date(currYear, currMonth - 1, currDate));
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                return { ...f, daysLeft: diffDays };
+                const nextAge = birthdayThisYear.getFullYear() - f.year;
+                
+                return { ...f, daysLeft: diffDays, nextAge: nextAge };
             }).sort((a, b) => a.daysLeft - b.daysLeft);
 
             if (upcoming.length === 0) {
@@ -233,16 +242,19 @@
                 return;
             }
 
-            let html = `<p class="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg mb-2">
-                နောက်လာမည့် မွေးနေ့အနီးဆုံးလ (` + getMonthName(upcoming[0].month) + `)
+            let html = `<p class="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg mb-3">
+                နောက်လာမည့် မွေးနေ့အနီးဆုံးများ
             </p>`;
             
-            const displayList = upcoming.slice(0, 3);
+            const displayList = upcoming.slice(0, 4); // ပြသမည့် အရေအတွက် ၄ ယောက်အထိ တိုးလိုက်သည်
             displayList.forEach(f => {
                 html += `
-                <div class="flex justify-between items-center bg-white/50 p-2 border border-dashed border-[#E3DEC3] rounded-lg">
-                    <span class="font-medium text-gray-800">🎈 ` + f.name + `</span>
-                    <span class="text-xs bg-gray-100 px-2 py-0.5 rounded-md font-mono text-gray-600">` + getMonthName(f.month) + ` ` + f.day + ` ရက်</span>
+                <div class="flex justify-between items-center bg-white/50 p-2.5 border border-dashed border-[#E3DEC3] rounded-lg mb-2">
+                    <div class="flex flex-col">
+                        <span class="font-medium text-gray-800">🎈 ` + f.name + `</span>
+                        <span class="text-[11px] text-amber-700 font-semibold">(` + f.nextAge + ` နှစ်ပြည့်တော့မည်)</span>
+                    </div>
+                    <span class="text-xs bg-gray-100 px-2 py-1 rounded-md font-mono text-gray-600">` + getMonthName(f.month) + ` ` + f.day + ` ရက်</span>
                 </div>`;
             });
             
@@ -254,7 +266,6 @@
             return months[m - 1];
         }
 
-        // Fixed Image Fetch URL String Concatenation
         async function loadPhotos() {
             const url = "https://www.googleapis.com/drive/v3/files?q='" + PHOTO_FOLDER_ID + "'+in+parents+and+mimeType+contains+'image/'&fields=files(id,name)&key=" + GOOGLE_API_KEY;
             const grid = document.getElementById('gallery-grid');
@@ -366,7 +377,6 @@
             }
         }
 
-        // Fixed Image Upload API call structure
         function handleUpload() {
             const fileInput = document.getElementById('file-input');
             const statusDiv = document.getElementById('upload-status');
@@ -422,7 +432,6 @@
             reader.readAsDataURL(file);
         }
 
-        // Confetti Canvas
         function initConfetti() {
             const canvas = document.getElementById("confetti-canvas");
             const ctx = canvas.getContext("2d");
