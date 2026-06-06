@@ -91,7 +91,7 @@
                 
                 <div class="flex items-center justify-center gap-4">
                     <button id="btn-play" onclick="togglePlay()" class="w-12 h-12 flex items-center justify-center bg-amber-700 hover:bg-amber-800 text-white rounded-full shadow-xs cursor-pointer transition">
-<svg id="icon-play" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                             <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
                         </svg>
                         <svg id="icon-pause" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
@@ -149,9 +149,9 @@
 
         const birthdayWishes = [
             "ဒီနေ့ကစပြီး လိုအင်ဆန္ဒတွေအကုန်ပြည့်ပါစေဦး သူငယ်ချင်းရေ! စိတ်ချမ်းသာကိုယ်ကျန်းမာရှိပါစေ။ 🎂",
-"မွေးနေ့ကစလို့ ဘဝတစ်ခုလုံး စိတ်အေးချမ်းသာယာပြီး အောင်မြင်မှုတွေ အလှတရားတွေနဲ့ ပြည့်နှက်ပါစေ။ ✨",
+            "မွေးနေ့ကစလို့ ဘဝတစ်ခုလုံး စိတ်အေးချမ်းသာယာပြီး အောင်မြင်မှုတွေ အလှတရားတွေနဲ့ ပြည့်နှက်ပါစေ။ ✨",
             "မွေးနေ့မှာတင်မကဘဲ တစ်သက်လုံး ပျော်ရွှင်ရယ်မောနိုင်ပါစေ။ 🥂",
-            "Happy Birthday ပါကွာ! စိတ်ကူးထားတဲ့ ရည်မှန်းချက်တွေအကုန်လုံး လွယ်လွယ်ကူကူနဲ့ အကောင်အထည်ပေါ်ပါစေ။ 🎉"
+            "Happy Birthday ပါကွာ! စိတ်ကူးထားတဲ့ ရည်မှန်းချက်တွေအကုန်လုံး လွယ်လွယ်ကူကူနဲ့ လျင်လျင်မြန်မြန် အကောင်အထည်ပေါ်ပါစေ။ 🎉"
         ];
 
         // Google Configurations
@@ -198,11 +198,11 @@
                 });
 
                 banner.className = "block bg-white/90 border-2 border-amber-400 rounded-2xl p-6 text-center shadow-lg relative overflow-hidden animate-pulse";
-                banner.innerHTML = 
+                banner.innerHTML = `
                     <div class="text-3xl mb-1">🎂</div>
-                    <h2 class="vintage-title text-xl font-black text-amber-800">Happy Birthday ပါ၊ ${names} ရေ...</h2>
-                    <p class="text-xs mt-2 italic text-amber-900 leading-relaxed font-medium">"${randomWish}"</p>
-                ;
+                    <h2 class="vintage-title text-xl font-black text-amber-800">Happy Birthday ပါ၊ ` + names + ` ရေ...</h2>
+                    <p class="text-xs mt-2 italic text-amber-900 leading-relaxed font-medium">"` + randomWish + `"</p>
+                `;
                 
                 document.getElementById('confetti-canvas').style.display = 'block';
                 initConfetti();
@@ -220,7 +220,7 @@
             
             let upcoming = friends.map(f => {
                 let birthdayThisYear = new Date(new Date().getFullYear(), f.month - 1, f.day);
-if (birthdayThisYear < new Date(new Date().getFullYear(), currMonth - 1, currDate)) {
+                if (birthdayThisYear < new Date(new Date().getFullYear(), currMonth - 1, currDate)) {
                     birthdayThisYear.setFullYear(birthdayThisYear.getFullYear() + 1);
                 }
                 const diffTime = Math.abs(birthdayThisYear - new Date(new Date().getFullYear(), currMonth - 1, currDate));
@@ -229,21 +229,21 @@ if (birthdayThisYear < new Date(new Date().getFullYear(), currMonth - 1, currDat
             }).sort((a, b) => a.daysLeft - b.daysLeft);
 
             if (upcoming.length === 0) {
-                listContainer.innerHTML = <p class="italic text-xs">သူငယ်ချင်းစာရင်း မရှိသေးပါ။</p>;
+                listContainer.innerHTML = `<p class="italic text-xs">သူငယ်ချင်းစာရင်း မရှိသေးပါ။</p>`;
                 return;
             }
 
-            let html = <p class="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg mb-2">
-                နောက်လာမည့် မွေးနေ့အနီးဆုံးလ (${getMonthName(upcoming[0].month)})
-            </p>;
+            let html = `<p class="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg mb-2">
+                နောက်လာမည့် မွေးနေ့အနီးဆုံးလ (` + getMonthName(upcoming[0].month) + `)
+            </p>`;
             
             const displayList = upcoming.slice(0, 3);
             displayList.forEach(f => {
-                html += 
+                html += `
                 <div class="flex justify-between items-center bg-white/50 p-2 border border-dashed border-[#E3DEC3] rounded-lg">
-                    <span class="font-medium text-gray-800">🎈 ${f.name}</span>
-                    <span class="text-xs bg-gray-100 px-2 py-0.5 rounded-md font-mono text-gray-600">${getMonthName(f.month)} ${f.day} ရက်</span>
-                </div>;
+                    <span class="font-medium text-gray-800">🎈 ` + f.name + `</span>
+                    <span class="text-xs bg-gray-100 px-2 py-0.5 rounded-md font-mono text-gray-600">` + getMonthName(f.month) + ` ` + f.day + ` ရက်</span>
+                </div>`;
             });
             
             listContainer.innerHTML = html;
@@ -254,9 +254,9 @@ if (birthdayThisYear < new Date(new Date().getFullYear(), currMonth - 1, currDat
             return months[m - 1];
         }
 
-        // Google Drive Fetch နဲ့ UI သီးသန့်ပြင်ဆင်ချက်
+        // Fixed Image Fetch URL String Concatenation
         async function loadPhotos() {
-            const url = https://www.googleapis.com/drive/v3/files?q='${PHOTO_FOLDER_ID}'+in+parents+and+mimeType+contains+'image/'&fields=files(id,name)&key=${GOOGLE_API_KEY};
+            const url = "https://www.googleapis.com/drive/v3/files?q='" + PHOTO_FOLDER_ID + "'+in+parents+and+mimeType+contains+'image/'&fields=files(id,name)&key=" + GOOGLE_API_KEY;
             const grid = document.getElementById('gallery-grid');
             
             try {
@@ -265,45 +265,45 @@ if (birthdayThisYear < new Date(new Date().getFullYear(), currMonth - 1, currDat
                 
                 if (data.files && data.files.length > 0) {
                     grid.innerHTML = '';
-                    document.getElementById('photo-count').innerText = ${data.files.length} Photos;
+                    document.getElementById('photo-count').innerText = data.files.length + " Photos";
                     
                     data.files.forEach((file) => {
-                        const embedUrl = https://lh3.googleusercontent.com/d/${file.id}=s600;
+                        const embedUrl = "https://lh3.googleusercontent.com/d/" + file.id + "=s600";
                         const randomRotation = (Math.random() * 6 - 3).toFixed(1); 
                         
                         const div = document.createElement('div');
                         div.className = "polaroid";
-                        div.style.setProperty('--r', ${randomRotation}deg);
-                        div.innerHTML = 
+                        div.style.setProperty('--r', randomRotation + "deg");
+                        div.innerHTML = `
                             <div class="w-full aspect-square bg-gray-100 overflow-hidden rounded-xs border border-gray-100">
-                                <img src="${embedUrl}" alt="Memory" class="w-full h-full object-cover opacity-0 transition-opacity duration-500" onload="this.style.opacity=1" onerror="this.src='https://placehold.co/400x400?text=Error+Loading'">
+                                <img src="` + embedUrl + `" alt="Memory" class="w-full h-full object-cover opacity-0 transition-opacity duration-500" onload="this.style.opacity=1" onerror="this.src='https://placehold.co/400x400?text=Error+Loading'">
                             </div>
                             <div class="mt-4 text-center vintage-title text-sm font-medium italic text-gray-600 tracking-wide">
-                                ${file.name.split('.')[0] || 'Sweet Memory'}
+                                ` + (file.name.split('.')[0] || 'Sweet Memory') + `
                             </div>
-                        ;
+                        `;
                         grid.appendChild(div);
                     });
                 } else {
-                    grid.innerHTML = <div class="col-span-full py-20 text-center text-sm text-gray-400">Drive folder ထဲတွင် ပုံများမရှိသေးပါ။</div>;
-document.getElementById('photo-count').innerText = 0 Photo;
+                    grid.innerHTML = `<div class="col-span-full py-20 text-center text-sm text-gray-400">Drive folder ထဲတွင် ပုံများမရှိသေးပါ။</div>`;
+                    document.getElementById('photo-count').innerText = `0 Photo`;
                 }
             } catch (err) {
                 console.error(err);
-                grid.innerHTML = <div class="col-span-full py-20 text-center text-xs text-red-500 font-medium">ပုံများဆွဲယူရာတွင် အမှားအယွင်းရှိနေပါသည်။ Drive Folder ကို 'Anyone with link' (Viewer) ပေးထားမှု ရှိမရှိ ပြန်စစ်ပေးပါ။</div>;
+                grid.innerHTML = `<div class="col-span-full py-20 text-center text-xs text-red-500 font-medium">ပုံများဆွဲယူရာတွင် အမှားအယွင်းရှိနေပါသည်။ Drive Folder ကို 'Anyone with the link' (Viewer) ပေးထားမှု ရှိမရှိ ပြန်စစ်ပေးပါ။</div>`;
             }
         }
 
         async function loadMusicList() {
-            const url = https://www.googleapis.com/drive/v3/files?q='${MUSIC_FOLDER_ID}'+in+parents+and+(mimeType+contains+'audio/'+or+mimeType+contains+'video/')&fields=files(id,name)&key=${GOOGLE_API_KEY};
+            const url = "https://www.googleapis.com/drive/v3/files?q='" + MUSIC_FOLDER_ID + "'+in+parents+and+(mimeType+contains+'audio/'+or+mimeType+contains+'video/')&fields=files(id,name)&key=" + GOOGLE_API_KEY;
             try {
                 const response = await fetch(url);
                 const data = await response.json();
                 if (data.files && data.files.length > 0) {
                     trackList = data.files;
-                    document.getElementById('track-title').innerHTML = <span>Memory Audio ချိတ်ဆက်မိပါပြီ။ Play ကိုနှိပ်ပါ။</span>;
+                    document.getElementById('track-title').innerHTML = `<span>Memory Audio ချိတ်ဆက်မိပါပြီ။ Play ကိုနှိပ်ပါ။</span>`;
                 } else {
-                    document.getElementById('track-title').innerHTML = <span>သီချင်း folder ထဲတွင် ဖိုင်မတွေ့ပါ။</span>;
+                    document.getElementById('track-title').innerHTML = `<span>သီချင်း folder ထဲတွင် ဖိုင်မတွေ့ပါ။</span>`;
                 }
             } catch (err) {
                 console.error("Music load error:", err);
@@ -319,8 +319,8 @@ document.getElementById('photo-count').innerText = 0 Photo;
             const track = trackList[currentTrackIndex];
             const audio = document.getElementById('audio-element');
             
-            audio.src = https://lh3.googleusercontent.com/d/${track.id};
-            document.getElementById('track-title').innerHTML = <span>Now Playing 🎵 : ${track.name.split('.')[0]}</span>;
+            audio.src = "https://lh3.googleusercontent.com/d/" + track.id;
+            document.getElementById('track-title').innerHTML = `<span>Now Playing 🎵 : ` + track.name.split('.')[0] + `</span>`;
             
             audio.play().then(() => {
                 updateMusicUI(true);
@@ -366,6 +366,7 @@ document.getElementById('photo-count').innerText = 0 Photo;
             }
         }
 
+        // Fixed Image Upload API call structure
         function handleUpload() {
             const fileInput = document.getElementById('file-input');
             const statusDiv = document.getElementById('upload-status');
@@ -378,7 +379,8 @@ document.getElementById('photo-count').innerText = 0 Photo;
 
             const file = fileInput.files[0];
             const reader = new FileReader();
-btn.disabled = true;
+            
+            btn.disabled = true;
             btn.innerText = "Uploading...";
             statusDiv.classList.remove('hidden', 'text-red-500', 'text-green-600');
             statusDiv.className = "mt-2 text-xs text-center text-amber-700 animate-pulse font-medium";
@@ -393,4 +395,94 @@ btn.disabled = true;
                 };
 
                 try {
-                    const response = await fetch(APPS
+                    const response = await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    
+                    if (result.status === "success") {
+                        statusDiv.className = "mt-2 text-xs text-center text-green-600 font-semibold";
+                        statusDiv.innerText = "🎉 ပုံတင်ခြင်း အောင်မြင်ပါသည်။ ခေတ္တအကြာတွင် Album ထဲ၌ ပေါ်လာပါမည်။";
+                        fileInput.value = '';
+                        setTimeout(() => { loadPhotos(); }, 3500);
+                    } else {
+                        throw new Error(result.message || "Failed");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    statusDiv.className = "mt-2 text-xs text-center text-red-500 font-semibold";
+                    statusDiv.innerText = "❌ Upload လုပ်၍ မရဖြစ်သွားပါသည်။ Apps Script Deploy ရွေးချယ်မှုများကို ပြန်စစ်ပါ။";
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = "Upload တင်မည်";
+                }
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // Confetti Canvas
+        function initConfetti() {
+            const canvas = document.getElementById("confetti-canvas");
+            const ctx = canvas.getContext("2d");
+            let width = (canvas.width = window.innerWidth);
+            let height = (canvas.height = window.innerHeight);
+            
+            window.addEventListener("resize", () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }, false);
+
+            const colors = ["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", "#009688", "#4caf50", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722"];
+            const confettiCount = 120;
+            const confettiParticles = [];
+
+            function Particle() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height - height;
+                this.r = Math.random() * 6 + 4;
+                this.d = Math.random() * confettiCount;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.tilt = Math.random() * 10 - 5;
+                this.tiltAngleIncremental = Math.random() * 0.07 + 0.02;
+                this.tiltAngle = 0;
+                
+                this.draw = function() {
+                    ctx.beginPath();
+                    ctx.lineWidth = this.r / 2;
+                    ctx.strokeStyle = this.color;
+                    ctx.moveTo(this.x + this.tilt + this.r / 4, this.y);
+                    ctx.lineTo(this.x + this.tilt, this.y + this.tilt + this.r / 4);
+                    ctx.stroke();
+                };
+            }
+
+            for (let i = 0; i < confettiCount; i++) {
+                confettiParticles.push(new Particle());
+            }
+
+            function update() {
+                ctx.clearRect(0, 0, width, height);
+                
+                for (let i = 0; i < confettiCount; i++) {
+                    const p = confettiParticles[i];
+                    p.tiltAngle += p.tiltAngleIncremental;
+                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                    p.x += Math.sin(p.tiltAngle);
+                    p.tilt = Math.sin(p.tiltAngle - i / 3) * 15;
+                    
+                    if (p.y > height) {
+                        p.x = Math.random() * width;
+                        p.y = -20;
+                        p.tilt = Math.random() * 10 - 5;
+                    }
+                    p.draw();
+                }
+                requestAnimationFrame(update);
+            }
+            update();
+        }
+    </script>
+</body>
+</html>
