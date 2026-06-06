@@ -110,7 +110,7 @@
                         </svg>
                     </button>
                 </div>
-                <audio id="audio-element" class="hidden" onended="nextTrack()" preload="auto" crossorigin="anonymous"></audio>
+                <audio id="audio-element" class="hidden" onended="nextTrack()" preload="auto"></audio>
             </div>
 
             <div id="upload-card" class="bg-white rounded-2xl p-6 border border-[#E3DEC3] shadow-xs">
@@ -136,7 +136,7 @@
             
             <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
                 <div id="gallery-loader" class="col-span-full py-20 text-center text-sm text-[#8C867A]">
-                    Google Drive မှ ပုံများကို ချိတ်ဆက်နေပါသည်...
+                    Google Drive မှ ပုံများကို ချဆက်နေပါသည်...
                 </div>
             </div>
         </div>
@@ -158,8 +158,7 @@
                                 <th class="pb-2 text-right">မွေးသက္ကရာဇ်</th>
                             </tr>
                         </thead>
-                        <tbody id="modal-table-body" class="divide-y divide-gray-100 text-[#736E64]">
-                            </tbody>
+                        <tbody id="modal-table-body" class="divide-y divide-gray-100 text-[#736E64]"></tbody>
                     </table>
                 </div>
             </div>
@@ -172,7 +171,6 @@
     </div>
 
     <script>
-        // ၁။ မွေးနေ့ရှင် စာရင်းအမှန်များ
         const friends = [
             { name: "Tharaphi Kyaw", year: 2002, month: 2, day: 1 },
             { name: "Par Mwe Hlyan", year: 2001, month: 8, day: 31 },
@@ -190,12 +188,18 @@
             "Happy Birthday ပါကွာ! စိတ်ကူးထားတဲ့ ရည်မှန်းချက်တွေအကုန်လုံး လွယ်လွယ်ကူကူနဲ့ လျင်လျင်မြန်မြန် အကောင်အထည်ပေါ်ပါစေ။ 🎉"
         ];
 
-        // 🎵 မင်းပေးထားတဲ့ Audio Direct Link ကို ကုဒ်ထဲမှာ အသေထည့်သွင်းပေးထားပြီး ဖြစ်ပါတယ်။
+        // 🎵 GitHub ထဲ တိုက်ရိုက်တင်ထားသည့် သီချင်း ၈ ပုဒ်လုံး၏ လမ်းကြောင်းများ
         const trackList = [
-            { name: "Our Special Memories", url: "https://docs.google.com/uc?export=download&id=1Pzn5-mR4FgZ12ZPNORZtN9W3QF31ON7R" }
+            { name: "1990 - Shine", url: "./1990_Shine.mp3" },
+            { name: "Choh Gunn", url: "./Choh_Gunn.mp3" },
+            { name: "Kyay Zu Pr Kwal - Shine", url: "./Kyay_zu_pr_kwal_Shine.mp3" },
+            { name: "On Your Shoulder - D Vision", url: "./On_your_shoulder_d-vision.mp3" },
+            { name: "Phit T Hmu - Shine", url: "./Phit_T_Hmu_Shine.mp3" },
+            { name: "Tagl Loh Myar", url: "./Tagl_loh_myar.mp3" },
+            { name: "Why - DoubleJ", url: "./Why_DoubleJ.mp3" },
+            { name: "Your Idol - Sajaboys", url: "./Your_idol_Sajaboys.mp3" }
         ];
 
-        // Google Configurations (ပုံပြသမှုအတွက်သာ)
         const PHOTO_FOLDER_ID = "1xpl6XSMULz2BBqpPc9E0uVnnOGc9s5wt";
         const GOOGLE_API_KEY = "AIzaSyA6i704gtn5D9DzHY9bzEy9tF2snE7NNFo";
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRw97SgMQnwHUQTZUJapV5gycmEI2dz7qayMiF6bABWfh6EVzd7KaGw0kmA-t_wdO6Aw/exec";
@@ -225,15 +229,12 @@
             modal.classList.remove('opacity-100');
             content.classList.remove('scale-100');
             content.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
         function buildModalTable() {
             const tbody = document.getElementById('modal-table-body');
             const sortedFriends = [...friends].sort((a,b) => a.month - b.month || a.day - b.day);
-            
             let html = "";
             sortedFriends.forEach(f => {
                 html += `
@@ -285,21 +286,18 @@
                     <h2 class="vintage-title text-xl font-black text-amber-800">Happy Birthday ပါ၊ ` + namesWithAge + ` ရေ...</h2>
                     <p class="text-xs mt-2 italic text-amber-900 leading-relaxed font-medium">"` + randomWish + `"</p>
                 `;
-                
                 document.getElementById('confetti-canvas').style.display = 'block';
                 initConfetti();
             } else {
                 bodyBg.className = "bg-[#F2EFE9] text-[#3A3834] min-h-screen transition-colors duration-1000 ease-in-out pb-12";
                 logo.className = "vintage-title text-xl sm:text-2xl font-bold tracking-wide text-[#5C564E]";
                 banner.className = "hidden";
-                
                 renderUpcomingBirthdays(currentMonth, currentDate, currentYear);
             }
         }
 
         function renderUpcomingBirthdays(currMonth, currDate, currYear) {
             const listContainer = document.getElementById('upcoming-list');
-            
             let upcoming = friends.map(f => {
                 let birthdayThisYear = new Date(currYear, f.month - 1, f.day);
                 if (birthdayThisYear < new Date(currYear, currMonth - 1, currDate)) {
@@ -308,7 +306,6 @@
                 const diffTime = Math.abs(birthdayThisYear - new Date(currYear, currMonth - 1, currDate));
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 const nextAge = birthdayThisYear.getFullYear() - f.year;
-                
                 return { ...f, daysLeft: diffDays, nextAge: nextAge };
             }).sort((a, b) => a.daysLeft - b.daysLeft);
 
@@ -317,10 +314,7 @@
                 return;
             }
 
-            let html = `<p class="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg mb-3">
-                နောက်လာမည့် မွေးနေ့အနီးဆုံးများ
-            </p>`;
-            
+            let html = `<p class="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1.5 rounded-lg mb-3">နောက်လာမည့် မွေးနေ့အနီးဆုံးများ</p>`;
             const displayList = upcoming.slice(0, 4);
             displayList.forEach(f => {
                 html += `
@@ -332,7 +326,6 @@
                     <span class="text-xs bg-gray-100 px-2 py-1 rounded-md font-mono text-gray-600">` + getMonthName(f.month) + ` ` + f.day + ` ရက်</span>
                 </div>`;
             });
-            
             listContainer.innerHTML = html;
         }
 
@@ -344,19 +337,15 @@
         async function loadPhotos() {
             const url = "https://www.googleapis.com/drive/v3/files?q='" + PHOTO_FOLDER_ID + "'+in+parents+and+mimeType+contains+'image/'&fields=files(id,name)&key=" + GOOGLE_API_KEY;
             const grid = document.getElementById('gallery-grid');
-            
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                
                 if (data.files && data.files.length > 0) {
                     grid.innerHTML = '';
                     document.getElementById('photo-count').innerText = data.files.length + " Photos";
-                    
                     data.files.forEach((file) => {
                         const embedUrl = "https://lh3.googleusercontent.com/d/" + file.id + "=s600";
                         const randomRotation = (Math.random() * 6 - 3).toFixed(1); 
-                        
                         const div = document.createElement('div');
                         div.className = "polaroid";
                         div.style.setProperty('--r', randomRotation + "deg");
@@ -364,9 +353,7 @@
                             <div class="w-full aspect-square bg-gray-100 overflow-hidden rounded-xs border border-gray-100">
                                 <img src="` + embedUrl + `" alt="Memory" class="w-full h-full object-cover opacity-0 transition-opacity duration-500" onload="this.style.opacity=1" onerror="this.src='https://placehold.co/400x400?text=Error+Loading'">
                             </div>
-                            <div class="mt-4 text-center vintage-title text-sm font-medium italic text-gray-600 tracking-wide">
-                                ` + (file.name.split('.')[0] || 'Sweet Memory') + `
-                            </div>
+                            <div class="mt-4 text-center vintage-title text-sm font-medium italic text-gray-600 tracking-wide">` + (file.name.split('.')[0] || 'Sweet Memory') + `</div>
                         `;
                         grid.appendChild(div);
                     });
@@ -376,14 +363,13 @@
                 }
             } catch (err) {
                 console.error(err);
-                grid.innerHTML = `<div class="col-span-full py-20 text-center text-xs text-red-500 font-medium">ပုံများဆွဲယူရာတွင် အမှားအယွင်းရှိနေပါသည်။ Drive Folder ကို 'Anyone with the link' (Viewer) ပေးထားမှု ရှိမရှိ ပြန်စစ်ပေးပါ။</div>`;
+                grid.innerHTML = `<div class="col-span-full py-20 text-center text-xs text-red-500 font-medium">ပုံများဆွဲယူရာတွင် အမှားအယွင်းရှိနေပါသည်။</div>`;
             }
         }
 
-        // 🎵 HTML5 Audio Controller
+        // 🎵 Stable HTML5 Audio Player System
         function playTrack(index) {
             if (trackList.length === 0) return;
-            
             currentTrackIndex = index;
             const track = trackList[currentTrackIndex];
             const audio = document.getElementById('audio-element');
@@ -392,31 +378,18 @@
             
             audio.src = track.url;
             audio.load();
-            
-            audio.play().then(() => {
-                updateMusicUI(true);
-            }).catch(err => {
-                console.log("Play error:", err);
-                updateMusicUI(false);
-            });
+            audio.play().then(() => { updateMusicUI(true); }).catch(err => { updateMusicUI(false); });
         }
 
         function togglePlay() {
             const audio = document.getElementById('audio-element');
-            
             if (trackList.length === 0) return;
-            
             if (currentTrackIndex === -1) {
                 playTrack(0);
                 return;
             }
-            
             if (audio.paused) {
-                audio.play().then(() => {
-                    updateMusicUI(true);
-                }).catch(() => {
-                    updateMusicUI(false);
-                });
+                audio.play().then(() => { updateMusicUI(true); }).catch(() => { updateMusicUI(false); });
             } else {
                 audio.pause();
                 updateMusicUI(false);
@@ -425,9 +398,7 @@
 
         function nextTrack() {
             let nextIndex = currentTrackIndex + 1;
-            if (nextIndex >= trackList.length) {
-                nextIndex = 0;
-            }
+            if (nextIndex >= trackList.length) { nextIndex = 0; }
             playTrack(nextIndex);
         }
 
@@ -447,15 +418,12 @@
             const fileInput = document.getElementById('file-input');
             const statusDiv = document.getElementById('upload-status');
             const btn = document.getElementById('btn-upload');
-            
             if (fileInput.files.length === 0) {
                 alert("တင်လိုသည့် ပုံရိပ်ကို အရင်ရွေးချယ်ပေးပါဦး။");
                 return;
             }
-
             const file = fileInput.files[0];
             const reader = new FileReader();
-            
             btn.disabled = true;
             btn.innerText = "Uploading...";
             statusDiv.classList.remove('hidden', 'text-red-500', 'text-green-600');
@@ -464,95 +432,46 @@
 
             reader.onload = async function(e) {
                 const base64Data = e.target.result.split(',')[1];
-                const payload = {
-                    data: base64Data,
-                    mimeType: file.type,
-                    filename: file.name
-                };
-
+                const payload = { data: base64Data, mimeType: file.type, filename: file.name };
                 try {
-                    const response = await fetch(APPS_SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify(payload)
-                    });
+                    const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
                     const result = await response.json();
-                    
                     if (result.status === "success") {
                         statusDiv.className = "mt-2 text-xs text-center text-green-600 font-semibold";
                         statusDiv.innerText = "🎉 ပုံတင်ခြင်း အောင်မြင်ပါသည်။ ခေတ္တအကြာတွင် Album ထဲ၌ ပေါ်လာပါမည်။";
                         fileInput.value = '';
                         setTimeout(() => { loadPhotos(); }, 3500);
-                    } else {
-                        throw new Error(result.message || "Failed");
-                    }
+                    } else { throw new Error(result.message || "Failed"); }
                 } catch (err) {
-                    console.error(err);
                     statusDiv.className = "mt-2 text-xs text-center text-red-500 font-semibold";
-                    statusDiv.innerText = "❌ Upload လုပ်၍ မရဖြစ်သွားပါသည်။ Apps Script Deploy ရွေးချယ်မှုများကို ပြန်စစ်ပါ။";
+                    statusDiv.innerText = "❌ Upload လုပ်၍ မရဖြစ်သွားပါသည်။";
                 } finally {
                     btn.disabled = false;
                     btn.innerText = "Upload တင်မည်";
                 }
             };
-            
             reader.readAsDataURL(file);
         }
 
         function initConfetti() {
             const canvas = document.getElementById("confetti-canvas");
             const ctx = canvas.getContext("2d");
-            let width = (canvas.width = window.innerWidth);
-            let height = (canvas.height = window.innerHeight);
-            
-            window.addEventListener("resize", () => {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-            }, false);
-
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+            window.addEventListener("resize", () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }, false);
             const colors = ["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", "#009688", "#4caf50", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722"];
             const confettiCount = 120;
             const confettiParticles = [];
-
             function Particle() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height - height;
-                this.r = Math.random() * 6 + 4;
-                this.d = Math.random() * confettiCount;
-                this.color = colors[Math.floor(Math.random() * colors.length)];
-                this.tilt = Math.random() * 10 - 5;
-                this.tiltAngleIncremental = Math.random() * 0.07 + 0.02;
-                this.tiltAngle = 0;
-                
-                this.draw = function() {
-                    ctx.beginPath();
-                    ctx.lineWidth = this.r / 2;
-                    ctx.strokeStyle = this.color;
-                    ctx.moveTo(this.x + this.tilt + this.r / 4, this.y);
-                    ctx.lineTo(this.x + this.tilt, this.y + this.tilt + this.r / 4);
-                    ctx.stroke();
-                };
+                this.x = Math.random() * width; this.y = Math.random() * height - height; this.r = Math.random() * 6 + 4; this.d = Math.random() * confettiCount; this.color = colors[Math.floor(Math.random() * colors.length)]; this.tilt = Math.random() * 10 - 5; this.tiltAngleIncremental = Math.random() * 0.07 + 0.02; this.tiltAngle = 0;
+                this.draw = function() { ctx.beginPath(); ctx.lineWidth = this.r / 2; ctx.strokeStyle = this.color; ctx.moveTo(this.x + this.tilt + this.r / 4, this.y); ctx.lineTo(this.x + this.tilt, this.y + this.tilt + this.r / 4); ctx.stroke(); };
             }
-
-            for (let i = 0; i < confettiCount; i++) {
-                confettiParticles.push(new Particle());
-            }
-
+            for (let i = 0; i < confettiCount; i++) { confettiParticles.push(new Particle()); }
             function update() {
                 ctx.clearRect(0, 0, width, height);
-                
                 for (let i = 0; i < confettiCount; i++) {
-                    const p = confettiParticles[i];
-                    p.tiltAngle += p.tiltAngleIncremental;
-                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
-                    p.x += Math.sin(p.tiltAngle);
-                    p.tilt = Math.sin(p.tiltAngle - i / 3) * 15;
-                    
-                    if (p.y > height) {
-                        p.x = Math.random() * width;
-                        p.y = -20;
-                        p.tilt = Math.random() * 10 - 5;
-                    }
-                    p.draw();
+                    const p = confettiParticles[i]; p.tiltAngle += p.tiltAngleIncremental; p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2; p.x += Math.sin(p.tiltAngle); p.tilt = Math.sin(p.tiltAngle - i / 3) * 15;
+                    if (p.y > height) { p.x = Math.random() * width; p.y = -20; p.tilt = Math.random() * 10 - 5; } p.draw();
                 }
                 requestAnimationFrame(update);
             }
